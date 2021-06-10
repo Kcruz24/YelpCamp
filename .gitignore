@@ -1,0 +1,14 @@
+Resources/.gitignore
+Resources/app.js
+Resources/package-lock.json
+Resources/package.json
+Resources/YelpCamp code (up to the end of this section).zip
+Resources/models/campground.js
+Resources/seeds/cities.js
+Resources/seeds/index.js
+Resources/seeds/seedHelpers.js
+Resources/views/home.ejs
+Resources/views/campgrounds/edit.ejs
+Resources/views/campgrounds/index.ejs
+Resources/views/campgrounds/new.ejs
+Resources/views/campgrounds/show.ejs
