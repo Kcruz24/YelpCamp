@@ -27,15 +27,12 @@ app.get("/", (req, res) => {
     res.render("home");
 });
 
-app.get("/makeCampground", async (req, res) => {
-    const camp = new Campground({
-        title: "My Backyard",
-        description: "Cheap Camping!"
-    });
-    await camp.save();
+app.get("/campgrounds", async (req, res) => {
+    const campgrounds = await Campground.find({});
 
-    res.send(camp);
+    res.render("campgrounds/index", {campgrounds});
 });
+
 
 app.listen(port, () => {
     console.log("Serving on port", port);
