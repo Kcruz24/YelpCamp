@@ -1,5 +1,4 @@
 const express = require("express");
-const app = express();
 const port = 3000;
 const path = require("path");
 const mongoose = require("mongoose");
@@ -17,6 +16,9 @@ db.on("error", console.error.bind(console.error, "connection error"));
 db.once("open", () => {
     console.log("Database connected");
 });
+
+
+const app = express();
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
