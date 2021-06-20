@@ -3,15 +3,18 @@
 <h1>All Campgrounds</h1>
 
 <div>
-    <a href="/campgrounds/new">Add Campground</a>
+    <a class="btn btn-warning mb-3"  href="/campgrounds/new">Add Campground</a>
 </div>
 
 <ul>
-    <% for (let campground of campgrounds) { %>
-    <li>
-        <a href="/campgrounds/<%= campground._id %>">
-            <%= campground.title %>
-        </a>
-    </li>
-    <% } %>
+    <div class="d-grid gap-1">
+       <% for (let campground of campgrounds) { %>
+       <li>
+           <a class="btn btn-outline-primary" href="/campgrounds/<%= campground._id %>">
+               <%= campground.title %>
+           </a>
+       </li>
+       <% } %>
+    </div>
+
 </ul>
