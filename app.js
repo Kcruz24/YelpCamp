@@ -24,7 +24,7 @@ const app = express();
 app.engine("ejs", ejsMate);
 
 // Parse req.body
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
 app.set("view engine", "ejs");
@@ -44,43 +44,53 @@ app.get("/campgrounds", async (req, res) => {
 ///////////////////// NEW /////////////////////////
 app.get("/campgrounds/new", (req, res) => {
     res.render("campgrounds/new");
-})
+});
 
-app.post("/campgrounds", async (req, res) => {
-    const campground = new Campground(req.body.campground);
-    await campground.save();
+app.post("/campgrounds", async (req, res, next) => {
+    try {
+        const campground = new Campground(req.body.campground);
+        await campground.save();
 
-    res.redirect(`/campgrounds/${campground._id}`);
-})
+        res.redirect(`/campgrounds/${campground._id}`);
+    } catch (e) {
+        return next(e);
+    }
+});
 
 ///////////////////// SHOW /////////////////////////
 app.get("/campgrounds/:id", async (req, res) => {
     const campground = await Campground.findById(req.params.id);
-    res.render("campgrounds/show", {campground});
+    res.render("campgrounds/show", { campground });
 });
-
 
 ///////////////////// EDIT /////////////////////////
 app.get("/campgrounds/:id/edit", async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     res.render("campgrounds/edit", { campground });
-})
+});
 
 app.put("/campgrounds/:id", async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
 
-    const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground})
+    const campground = await Campground.findByIdAndUpdate(id, {
+        ...req.body.campground
+    });
 
     res.redirect(`/campgrounds/${campground._id}`);
-})
+});
 
 ///////////////////// DELETE /////////////////////////
 app.delete("/campgrounds/:id", async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     await Campground.findByIdAndDelete(id);
 
     res.redirect("/campgrounds");
-})
+});
+
+////////////////// ERROR HANDLER /////////////////////
+app.use((err, req, res, next) => {
+    res.send("Oh boy, something went wrong!");
+});
 
 ///////////////////// SERVER /////////////////////////
 app.listen(port, () => {
