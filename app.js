@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const Campground = require("./models/campground.js");
 const ejsMate = require("ejs-mate");
 const catchAsyncErrors = require("./utils/catchAsyncErrors");
+const ExpressError = require("./utils/ExpressError");
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
     useNewUrlParser: true,
@@ -52,6 +53,9 @@ app.get("/campgrounds/new", (req, res) => {
 app.post(
     "/campgrounds",
     catchAsyncErrors(async (req, res, next) => {
+        if (!req.body.campground)
+            throw new ExpressError("Invalid Campground Data", 400);
+
         const campground = new Campground(req.body.campground);
         await campground.save();
 
@@ -101,9 +105,14 @@ app.delete(
     })
 );
 
+app.all("*", (req, res, next) => {
+    next(new ExpressError("Page Not Found", 404));
+});
+
 ////////////////// ERROR HANDLER /////////////////////
 app.use((err, req, res, next) => {
-    res.send("Oh boy, something went wrong!");
+    const { statusCode = 500, message = "Something went wrong" } = err;
+    res.status(statusCode).send(message);
 });
 
 ///////////////////// SERVER /////////////////////////
