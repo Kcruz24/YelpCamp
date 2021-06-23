@@ -7,7 +7,7 @@ const Campground = require("./models/campground.js");
 const ejsMate = require("ejs-mate");
 const catchAsyncErrors = require("./utils/catchAsyncErrors");
 const ExpressError = require("./utils/ExpressError");
-const Joi = require("joi");
+const { campgroundJoiSchema } = require("./schemas");
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
     useNewUrlParser: true,
@@ -32,6 +32,16 @@ app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+const validateCampground = (req, res, next) => {
+    const { error } = campgroundJoiSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(msg, 400);
+    } else {
+        next();
+    }
+};
+
 app.get("/", (req, res) => {
     res.render("campgrounds/home");
 });
@@ -53,28 +63,8 @@ app.get("/campgrounds/new", (req, res) => {
 
 app.post(
     "/campgrounds",
+    validateCampground,
     catchAsyncErrors(async (req, res, next) => {
-        console.log("hola post");
-
-        // THIS IS NOT A MONGOOSE SCHEMA, this just validates the data BEFORE we attempt to save it with mongoose
-        // ALSO, we only see this info if we get past the client-side validation.
-        const campgroundJoiSchema = Joi.object({
-            campground: Joi.object({
-                title: Joi.string().required(),
-                price: Joi.number().required().min(0),
-                image: Joi.string().required(),
-                location: Joi.string().required(),
-                description: Joi.string().required()
-            }).required()
-        });
-
-        const { error } = campgroundJoiSchema.validate(req.body);
-        if (error) {
-            const msg = error.details.map((el) => el.message).join(",");
-            throw new ExpressError(msg, 400);
-        }
-
-        console.log(result);
         const campground = new Campground(req.body.campground);
         await campground.save();
 
@@ -102,6 +92,7 @@ app.get(
 
 app.put(
     "/campgrounds/:id",
+    validateCampground,
     catchAsyncErrors(async (req, res) => {
         const { id } = req.params;
 
