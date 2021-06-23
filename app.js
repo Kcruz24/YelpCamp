@@ -7,6 +7,7 @@ const Campground = require("./models/campground.js");
 const ejsMate = require("ejs-mate");
 const catchAsyncErrors = require("./utils/catchAsyncErrors");
 const ExpressError = require("./utils/ExpressError");
+const Joi = require("joi");
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
     useNewUrlParser: true,
@@ -53,9 +54,27 @@ app.get("/campgrounds/new", (req, res) => {
 app.post(
     "/campgrounds",
     catchAsyncErrors(async (req, res, next) => {
-        if (!req.body.campground)
-            throw new ExpressError("Invalid Campground Data", 400);
+        console.log("hola post");
 
+        // THIS IS NOT A MONGOOSE SCHEMA, this just validates the data BEFORE we attempt to save it with mongoose
+        // ALSO, we only see this info if we get past the client-side validation.
+        const campgroundJoiSchema = Joi.object({
+            campground: Joi.object({
+                title: Joi.string().required(),
+                price: Joi.number().required().min(0),
+                image: Joi.string().required(),
+                location: Joi.string().required(),
+                description: Joi.string().required()
+            }).required()
+        });
+
+        const { error } = campgroundJoiSchema.validate(req.body);
+        if (error) {
+            const msg = error.details.map((el) => el.message).join(",");
+            throw new ExpressError(msg, 400);
+        }
+
+        console.log(result);
         const campground = new Campground(req.body.campground);
         await campground.save();
 
