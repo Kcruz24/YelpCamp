@@ -21,7 +21,7 @@ const sample = (array) => array[Math.floor(Math.random() * array.length)];
 const seedDB = async () => {
     await Campground.deleteMany({});
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 50; i++) {
         const random1000 = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 20) + 10;
 
@@ -38,13 +38,6 @@ const seedDB = async () => {
     }
 };
 
-// const deleteAll = async () => {
-//     await Campground.remove({title: {$ne: "Roadtrip"}});
-//    // res.deletedCount();
-// };
-
-// deleteAll();
-
-// seedDB().then(() => {
-//     mongoose.connection.close();
-// });
+seedDB().then(() => {
+    mongoose.connection.close();
+});
