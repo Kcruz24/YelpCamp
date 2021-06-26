@@ -8,6 +8,7 @@ const ejsMate = require("ejs-mate");
 const catchAsyncErrors = require("./utils/catchAsyncErrors");
 const ExpressError = require("./utils/ExpressError");
 const { campgroundJoiSchema } = require("./schemas");
+const Review = require("./models/review");
 
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
     useNewUrlParser: true,
@@ -115,11 +116,27 @@ app.delete(
     })
 );
 
+app.post(
+    "/campgrounds/:id/reviews",
+    catchAsyncErrors(async (req, res) => {
+        const campground = await Campground.findById(req.params.id);
+        const review = new Review(req.body.review);
+
+        // Push new review in the selected campground id
+        campground.reviews.push(review);
+
+        await review.save();
+        await campground.save();
+
+        res.redirect(`/campgrounds/${campground._id}`);
+    })
+);
+
+////////////////// ERROR HANDLING ////////////////////
 app.all("*", (req, res, next) => {
     next(new ExpressError("Page Not Found", 404));
 });
 
-////////////////// ERROR HANDLER /////////////////////
 app.use((err, req, res, next) => {
     const { statusCode = 500 } = err;
 
