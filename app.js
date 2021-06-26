@@ -7,9 +7,11 @@ const Campground = require("./models/campground.js");
 const ejsMate = require("ejs-mate");
 const catchAsyncErrors = require("./utils/catchAsyncErrors");
 const ExpressError = require("./utils/ExpressError");
-const { campgroundJoiSchema } = require("./schemas");
+const { campgroundJoiSchema, reviewJoiSchema } = require("./schemas");
 const Review = require("./models/review");
+const app = express();
 
+///////////////// DATABASE CONNECTION //////////////////////
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
     useNewUrlParser: true,
     useCreateIndex: true,
@@ -22,8 +24,6 @@ db.once("open", () => {
     console.log("Database connected");
 });
 
-const app = express();
-
 app.engine("ejs", ejsMate);
 
 // Parse req.body
@@ -33,6 +33,7 @@ app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+/////////////////// VALIDATION ////////////////////////
 const validateCampground = (req, res, next) => {
     const { error } = campgroundJoiSchema.validate(req.body);
     if (error) {
@@ -43,6 +44,17 @@ const validateCampground = (req, res, next) => {
     }
 };
 
+const validateReview = (req, res, next) => {
+    const { error } = reviewJoiSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(msg, 400);
+    } else {
+        next();
+    }
+};
+
+///////////////////// HOME /////////////////////////
 app.get("/", (req, res) => {
     res.render("campgrounds/home");
 });
@@ -116,8 +128,10 @@ app.delete(
     })
 );
 
+///////////////// CREATE REVIEW /////////////////////////
 app.post(
     "/campgrounds/:id/reviews",
+    validateReview,
     catchAsyncErrors(async (req, res) => {
         const campground = await Campground.findById(req.params.id);
         const review = new Review(req.body.review);
