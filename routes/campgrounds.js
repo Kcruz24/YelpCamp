@@ -51,6 +51,13 @@ router.get(
             "reviews"
         );
 
+        const campgroundNotFound = !campground;
+
+        if (campgroundNotFound) {
+            req.flash("error", "Cannot find that campground  :(");
+            return res.redirect("/campgrounds");
+        }
+
         res.render("campgrounds/show", { campground });
     })
 );
@@ -60,6 +67,17 @@ router.get(
     "/:id/edit",
     catchAsyncErrors(async (req, res) => {
         const campground = await Campground.findById(req.params.id);
+
+        const campgroundNotFound = !campground;
+
+        if (campgroundNotFound) {
+            req.flash(
+                "error",
+                "Cannot edit a campground that does not exist  :("
+            );
+            return res.redirect("/campgrounds");
+        }
+
         res.render("campgrounds/edit", { campground });
     })
 );
