@@ -4,6 +4,7 @@ const catchAsyncErrors = require("../utils/catchAsyncErrors");
 const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground.js");
 const { campgroundJoiSchema } = require("../schemas");
+const { isLoggedIn } = require("../middleware");
 
 /////////////////// VALIDATION ////////////////////////
 const validateCampground = (req, res, next) => {
@@ -27,12 +28,13 @@ router.get(
 );
 
 ///////////////////// NEW /////////////////////////
-router.get("/new", (req, res) => {
+router.get("/new", isLoggedIn, (req, res) => {
     res.render("campgrounds/new");
 });
 
 router.post(
     "/",
+    isLoggedIn,
     validateCampground,
     catchAsyncErrors(async (req, res, next) => {
         req.flash("success", "Successfully made a new campground!");
@@ -50,7 +52,6 @@ router.get(
         const campground = await Campground.findById(req.params.id).populate(
             "reviews"
         );
-
         const campgroundNotFound = !campground;
 
         if (campgroundNotFound) {
@@ -65,9 +66,9 @@ router.get(
 ///////////////////// EDIT /////////////////////////
 router.get(
     "/:id/edit",
+    isLoggedIn,
     catchAsyncErrors(async (req, res) => {
         const campground = await Campground.findById(req.params.id);
-
         const campgroundNotFound = !campground;
 
         if (campgroundNotFound) {
@@ -84,10 +85,10 @@ router.get(
 
 router.put(
     "/:id",
+    isLoggedIn,
     validateCampground,
     catchAsyncErrors(async (req, res) => {
         const { id } = req.params;
-
         const campground = await Campground.findByIdAndUpdate(id, {
             ...req.body.campground
         });
@@ -100,6 +101,7 @@ router.put(
 ///////////////////// DELETE /////////////////////////
 router.delete(
     "/:id",
+    isLoggedIn,
     catchAsyncErrors(async (req, res) => {
         const { id } = req.params;
         await Campground.findByIdAndDelete(id);
