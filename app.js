@@ -9,10 +9,12 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
-const reviews = require("./routes/reviews");
-const campgrounds = require("./routes/campgrounds");
 const ExpressError = require("./utils/ExpressError");
 const User = require("./models/user");
+
+const reviewRoutes = require("./routes/reviews");
+const campgroundRoutes = require("./routes/campgrounds");
+const userRoutes = require("./routes/user");
 
 ///////////////// DATABASE CONNECTION //////////////////////
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
@@ -80,8 +82,9 @@ app.get("/fakeUser", async (req, res) => {
 });
 
 /////////////////////// ROUTERS //////////////////////
-app.use("/campgrounds", campgrounds);
-app.use("/campgrounds/:id/reviews", reviews);
+app.use("/campgrounds", campgroundRoutes);
+app.use("/campgrounds/:id/reviews", reviewRoutes);
+app.use("/", userRoutes);
 
 ///////////////////// HOME /////////////////////////
 app.get("/", (req, res) => {
