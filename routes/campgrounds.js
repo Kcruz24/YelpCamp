@@ -27,7 +27,7 @@ router.get(
 );
 
 ///////////////////// NEW /////////////////////////
-router.get("/campgrounds/new", (req, res) => {
+router.get("/new", (req, res) => {
     res.render("campgrounds/new");
 });
 
@@ -35,6 +35,7 @@ router.post(
     "/",
     validateCampground,
     catchAsyncErrors(async (req, res, next) => {
+        req.flash("success", "Successfully made a new campground!");
         const campground = new Campground(req.body.campground);
         await campground.save();
 
