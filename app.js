@@ -7,6 +7,7 @@ const ExpressError = require("./utils/ExpressError");
 const methodOverride = require("method-override");
 const campgrounds = require("./routes/campgrounds");
 const reviews = require("./routes/reviews");
+const session = require("express-session");
 
 ///////////////// DATABASE CONNECTION //////////////////////
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
@@ -25,14 +26,27 @@ db.once("open", () => {
 const app = express();
 
 app.engine("ejs", ejsMate);
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 /////////////////////// CONFIGS //////////////////////
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+const sessionConfig = {
+    secret: "thisshouldbeabettersecret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        //                    ms     s    m    h   d
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+        httpOnly: true
+    }
+};
+
+app.use(session(sessionConfig));
 
 /////////////////////// ROUTERS //////////////////////
 app.use("/campgrounds", campgrounds);
