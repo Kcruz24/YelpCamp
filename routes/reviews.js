@@ -3,15 +3,17 @@ const router = express.Router({ mergeParams: true });
 const catchAsyncErrors = require("../utils/catchAsyncErrors");
 const Review = require("../models/review");
 const Campground = require("../models/campground.js");
-const { validateReview } = require("../middleware");
+const { validateReview, isLoggedIn } = require("../middleware");
 
 ///////////////// CREATE REVIEW /////////////////////////
 router.post(
     "/",
+    isLoggedIn,
     validateReview,
     catchAsyncErrors(async (req, res) => {
         const campground = await Campground.findById(req.params.id);
         const review = new Review(req.body.review);
+        review.author = req.user._id;
 
         // Push new review in the selected campground id
         campground.reviews.push(review);
