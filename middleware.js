@@ -1,6 +1,7 @@
 const { campgroundJoiSchema, reviewJoiSchema } = require("./schemas");
 const ExpressError = require("./utils/ExpressError");
-const Campground = require("./models/campground.js");
+const Campground = require("./models/campground");
+const Review = require("./models/review");
 
 module.exports.isLoggedIn = (req, res, next) => {
     // req.user comes from passport, user is going to be automatically filled in with the deserialized info from the session.
@@ -32,9 +33,22 @@ module.exports.validateCampground = (req, res, next) => {
 module.exports.isAuthor = async (req, res, next) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
-    const isEqualAuthorAndUserId = campground.author.equals(req.user._id);
+    const isEqualCampAuthorAndUserId = campground.author.equals(req.user._id);
 
-    if (isEqualAuthorAndUserId) {
+    if (isEqualCampAuthorAndUserId) {
+        next();
+    } else {
+        req.flash("error", "You do not have permission to do that!");
+        return res.redirect(`/campgrounds/${id}`);
+    }
+};
+
+module.exports.isReviewAuthor = async (req, res, next) => {
+    const { id, reviewId } = req.params;
+    const review = await Review.findById(reviewId);
+    const isEqualReviewAuthorAndUserId = review.author.equals(req.user._id);
+
+    if (isEqualReviewAuthorAndUserId) {
         next();
     } else {
         req.flash("error", "You do not have permission to do that!");
