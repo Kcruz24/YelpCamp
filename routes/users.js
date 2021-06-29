@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const {
-    renderRegister,
+    renderRegisterForm,
     registerUser,
     renderLogin,
     authenticate,
@@ -10,17 +10,19 @@ const {
     logoutUser
 } = require("../controllers/users");
 
-///////////////// REGISTER /////////////////////////
-router.get("/register", renderRegister);
+// Render REGISTER form. REGISTER user
+router
+    .route("/register")
+    .get(renderRegisterForm)
+    .post(registerUser);
 
-router.post("/register", registerUser);
+// Render LOGIN form. LOGIN user
+router
+    .route("/login")
+    .get(renderLogin)
+    .post(authenticate, loginUser);
 
-///////////////// LOGIN /////////////////////////
-router.get("/login", renderLogin);
-
-router.post("/login", authenticate, loginUser);
-
-///////////////// LOGOUT /////////////////////////
+// LOGOUT
 router.get("/logout", logoutUser);
 
 module.exports = router;

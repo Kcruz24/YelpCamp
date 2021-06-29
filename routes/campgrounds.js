@@ -14,23 +14,23 @@ const {
     deleteCampground
 } = require("../controllers/campgrounds");
 
-///////////////////// INDEX /////////////////////////
-router.get("/", renderAllCampgrounds);
-
-///////////////////// NEW /////////////////////////
+// Render NEW form
 router.get("/new", isLoggedIn, renderNewForm);
 
-router.post("/", isLoggedIn, validateCampground, createNewCampground);
-
-///////////////////// SHOW /////////////////////////
-router.get("/:id", showCampground);
-
-///////////////////// EDIT /////////////////////////
+// Render EDIT form
 router.get("/:id/edit", isLoggedIn, isAuthor, renderEditForm);
 
-router.put("/:id", isLoggedIn, isAuthor, validateCampground, updateCampground);
+// Render all campgrounds (INDEX) and Create NEW campground
+router
+    .route("/")
+    .get(renderAllCampgrounds)
+    .post(isLoggedIn, validateCampground, createNewCampground);
 
-///////////////////// DELETE /////////////////////////
-router.delete("/:id", isLoggedIn, isAuthor, deleteCampground);
+// Show, Update, and Delete campground
+router
+    .route("/:id")
+    .get(showCampground)
+    .put(isLoggedIn, isAuthor, validateCampground, updateCampground)
+    .delete(isLoggedIn, isAuthor, deleteCampground);
 
 module.exports = router;

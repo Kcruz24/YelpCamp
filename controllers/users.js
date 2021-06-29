@@ -3,7 +3,7 @@ const passport = require("passport");
 const catchAsyncErrors = require("../utils/catchAsyncErrors");
 
 // Get: Register
-module.exports.renderRegister = (req, res) => {
+module.exports.renderRegisterForm = (req, res) => {
     res.render("auth/register");
 };
 
