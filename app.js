@@ -42,7 +42,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
-// Flash & Session //
+// Flash //
+app.use(flash());
+
+// Session //
 const sessionConfig = {
     secret: "thisshouldbeabettersecret",
     resave: false,
@@ -56,7 +59,6 @@ const sessionConfig = {
 };
 
 app.use(session(sessionConfig));
-app.use(flash());
 
 // Passport //
 app.use(passport.initialize());
@@ -64,25 +66,19 @@ app.use(passport.session());
 
 passport.use(new LocalStrategy(User.authenticate()));
 
+// Serialization refers to how do we store a user in a session
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 // locals
 app.use((req, res, next) => {
     // req.user comes from passport, therefore the passport middleware should be above this.
+    // req.user is going to be automatically filled in with the deserialized info from the session.
     console.log(req.session);
     res.locals.currentUser = req.user;
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     next();
-});
-
-// Serialization refers to how do we store a user in a session
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
-app.get("/fakeUser", async (req, res) => {
-    const user = new User({ email: "Kevin@gmai.com", username: "kevin" });
-    const newUser = await User.register(user, "monkey");
-
-    res.send(newUser);
 });
 
 /////////////////////// ROUTERS //////////////////////

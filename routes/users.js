@@ -4,6 +4,7 @@ const catchAsyncErrors = require("../utils/catchAsyncErrors");
 const User = require("../models/user");
 const passport = require("passport");
 
+///////////////// REGISTER /////////////////////////
 router.get("/register", (req, res) => {
     res.render("auth/register");
 });
@@ -30,6 +31,7 @@ router.post(
     })
 );
 
+///////////////// LOGIN /////////////////////////
 router.get("/login", (req, res) => {
     res.render("auth/login");
 });
@@ -49,6 +51,7 @@ router.post(
     }
 );
 
+///////////////// LOGOUT /////////////////////////
 router.get("/logout", (req, res) => {
     // logout() comes from passport
     req.logout();
