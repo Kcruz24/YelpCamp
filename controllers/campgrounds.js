@@ -68,7 +68,7 @@ module.exports.updateCampground = catchAsyncErrors(async (req, res) => {
     res.redirect(`/campgrounds/${campground._id}`);
 });
 
-// Delete: Delete
+// Delete
 module.exports.deleteCampground = catchAsyncErrors(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
