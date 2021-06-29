@@ -21,8 +21,7 @@ const validateCampground = (req, res, next) => {
 router.get(
     "/",
     catchAsyncErrors(async (req, res) => {
-        const campgrounds = await Campground.find({});
-
+        const campgrounds = await Campground.find({}).populate("author");
         res.render("campgrounds/index", { campgrounds });
     })
 );
@@ -39,6 +38,7 @@ router.post(
     catchAsyncErrors(async (req, res, next) => {
         req.flash("success", "Successfully made a new campground!");
         const campground = new Campground(req.body.campground);
+        campground.author = req.user._id;
         await campground.save();
 
         res.redirect(`/campgrounds/${campground._id}`);
@@ -49,9 +49,9 @@ router.post(
 router.get(
     "/:id",
     catchAsyncErrors(async (req, res) => {
-        const campground = await Campground.findById(req.params.id).populate(
-            "reviews"
-        );
+        const campground = await Campground.findById(req.params.id)
+            .populate("reviews")
+            .populate("author");
         const campgroundNotFound = !campground;
 
         if (campgroundNotFound) {
