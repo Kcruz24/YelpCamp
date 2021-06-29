@@ -36,7 +36,8 @@
                 <div class="input-group">
                     <span class="input-group-text" id="price-label">$</span>
                     <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price"
-                        aria-describedby="price-label" name="campground[price]" value="<%= campground.price %> " required>
+                        aria-describedby="price-label" name="campground[price]" value="<%= campground.price %> "
+                        required>
                 </div>
                 <div class="valid-feedback">
                     Looks good!
@@ -45,8 +46,8 @@
 
             <div class="mb-3">
                 <label class="form-label" for="description">Description</label>
-                <textarea class="form-control" type="text" id="description"
-                    name="campground[description]" required><%= campground.description %> </textarea>
+                <textarea class="form-control" type="text" id="description" name="campground[description]"
+                    required><%= campground.description %> </textarea>
                 <div class="valid-feedback">
                     Looks good!
                 </div>
@@ -56,8 +57,11 @@
                 <button class="btn btn-info">Update Campground</button>
             </div>
 
+            <div class="mb-3">
+                <a class="btn btn-primary" href="/campgrounds/<%= campground._id %>">Back</a>
+            </div>
         </form>
 
-        <a href="/campgrounds/<%= campground._id %>">Back To Campground</a>
+
     </div>
 </div>
