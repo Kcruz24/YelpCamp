@@ -14,7 +14,7 @@ const User = require("./models/user");
 
 const reviewRoutes = require("./routes/reviews");
 const campgroundRoutes = require("./routes/campgrounds");
-const userRoutes = require("./routes/user");
+const userRoutes = require("./routes/users");
 
 ///////////////// DATABASE CONNECTION //////////////////////
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
