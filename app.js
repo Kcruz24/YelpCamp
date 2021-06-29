@@ -67,6 +67,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 // locals
 app.use((req, res, next) => {
     // req.user comes from passport, therefore the passport middleware should be above this.
+    console.log(req.session);
     res.locals.currentUser = req.user;
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
