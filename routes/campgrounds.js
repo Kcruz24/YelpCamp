@@ -2,7 +2,9 @@ const express = require("express");
 const router = express.Router();
 const { isLoggedIn, isAuthor, validateCampground } = require("../middleware");
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+const { storage } = require("../cloudinary");
+// Image storing destination
+const upload = multer({ storage });
 
 const {
     renderAllCampgrounds,
