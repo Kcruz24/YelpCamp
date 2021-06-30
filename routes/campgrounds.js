@@ -26,11 +26,7 @@ router.get("/:id/edit", isLoggedIn, isAuthor, renderEditForm);
 router
     .route("/")
     .get(renderAllCampgrounds)
-    // .post(isLoggedIn, validateCampground, createNewCampground);
-    .post(upload.array("image"), (req, res) => {
-        console.log(req.body, req.files);
-        res.send("It worked!");
-    });
+    .post(isLoggedIn, upload.array("image"), validateCampground, createNewCampground);
 
 // Show, Update, and Delete campground
 router
