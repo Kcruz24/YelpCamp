@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const catchAsyncErrors = require("../utils/catchAsyncErrors");
-const Campground = require("../models/campground.js");
 const { isLoggedIn, isAuthor, validateCampground } = require("../middleware");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 const {
     renderAllCampgrounds,
@@ -24,7 +24,11 @@ router.get("/:id/edit", isLoggedIn, isAuthor, renderEditForm);
 router
     .route("/")
     .get(renderAllCampgrounds)
-    .post(isLoggedIn, validateCampground, createNewCampground);
+    // .post(isLoggedIn, validateCampground, createNewCampground);
+    .post(upload.array("image"), (req, res) => {
+        console.log(req.body, req.files);
+        res.send("It worked!");
+    });
 
 // Show, Update, and Delete campground
 router
