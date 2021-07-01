@@ -68,6 +68,7 @@ module.exports.renderEditForm = catchAsyncErrors(async (req, res) => {
 // Put: Edit
 module.exports.updateCampground = catchAsyncErrors(async (req, res) => {
     const { id } = req.params;
+    console.log(req.body);
     const campground = await Campground.findByIdAndUpdate(id, {
         ...req.body.campground
     });
