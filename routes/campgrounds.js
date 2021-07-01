@@ -26,13 +26,24 @@ router.get("/:id/edit", isLoggedIn, isAuthor, renderEditForm);
 router
     .route("/")
     .get(renderAllCampgrounds)
-    .post(isLoggedIn, upload.array("image"), validateCampground, createNewCampground);
+    .post(
+        isLoggedIn,
+        upload.array("image"),
+        validateCampground,
+        createNewCampground
+    );
 
 // Show, Update, and Delete campground
 router
     .route("/:id")
     .get(showCampground)
-    .put(isLoggedIn, isAuthor, validateCampground, updateCampground)
+    .put(
+        isLoggedIn,
+        isAuthor,
+        upload.array("image"),
+        validateCampground,
+        updateCampground
+    )
     .delete(isLoggedIn, isAuthor, deleteCampground);
 
 module.exports = router;

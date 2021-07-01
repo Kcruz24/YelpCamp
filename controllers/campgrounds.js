@@ -71,7 +71,14 @@ module.exports.updateCampground = catchAsyncErrors(async (req, res) => {
     const campground = await Campground.findByIdAndUpdate(id, {
         ...req.body.campground
     });
+    const imgs = req.files.map((file) => ({
+        url: file.path,
+        filename: file.filename
+    }));
+    // The spread operator "..." is to pass the data from the array and not the array itself
+    campground.images.push(...imgs);
 
+    await campground.save();
     req.flash("success", "Successfully updated campground!");
     res.redirect(`/campgrounds/${campground._id}`);
 });
