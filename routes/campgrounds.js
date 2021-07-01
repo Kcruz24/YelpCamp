@@ -1,10 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { isLoggedIn, isAuthor, validateCampground } = require("../middleware");
-const multer = require("multer");
-const { storage } = require("../cloudinary");
-// Image storing destination
-const upload = multer({ storage });
+
+
 
 const {
     renderAllCampgrounds,
@@ -13,7 +11,8 @@ const {
     showCampground,
     renderEditForm,
     updateCampground,
-    deleteCampground
+    deleteCampground,
+    uploadImages
 } = require("../controllers/campgrounds");
 
 // Render NEW form
@@ -26,12 +25,7 @@ router.get("/:id/edit", isLoggedIn, isAuthor, renderEditForm);
 router
     .route("/")
     .get(renderAllCampgrounds)
-    .post(
-        isLoggedIn,
-        upload.array("image"),
-        validateCampground,
-        createNewCampground
-    );
+    .post(isLoggedIn, uploadImages, validateCampground, createNewCampground);
 
 // Show, Update, and Delete campground
 router
@@ -40,7 +34,7 @@ router
     .put(
         isLoggedIn,
         isAuthor,
-        upload.array("image"),
+        uploadImages,
         validateCampground,
         updateCampground
     )

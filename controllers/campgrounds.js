@@ -1,6 +1,9 @@
 const Campground = require("../models/campground.js");
 const catchAsyncErrors = require("../utils/catchAsyncErrors");
-const { cloudinary } = require("../cloudinary");
+const { cloudinary, storage } = require("../cloudinary");
+const multer = require("multer");
+// Image storing destination
+const upload = multer({ storage });
 
 // Get: Index
 module.exports.renderAllCampgrounds = catchAsyncErrors(async (req, res) => {
@@ -115,3 +118,6 @@ module.exports.deleteCampground = catchAsyncErrors(async (req, res) => {
     req.flash("success", "Successfully deleted campground");
     res.redirect("/campgrounds");
 });
+
+// Upload images
+module.exports.uploadImages = upload.array("image");
