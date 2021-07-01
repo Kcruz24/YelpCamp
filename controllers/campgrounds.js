@@ -1,6 +1,12 @@
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+// geoCoder contains forwardGeocode and reverseGeocode
+const geoCoder = mbxGeocoding({ accessToken: mapBoxToken });
+
 const Campground = require("../models/campground.js");
 const catchAsyncErrors = require("../utils/catchAsyncErrors");
 const { cloudinary, storage } = require("../cloudinary");
+
 const multer = require("multer");
 // Image storing destination
 const upload = multer({ storage });
@@ -19,7 +25,17 @@ module.exports.renderNewForm = (req, res) => {
 // Post: New
 module.exports.createNewCampground = catchAsyncErrors(
     async (req, res, next) => {
+        const geoData = await geoCoder
+            .forwardGeocode({
+                query: req.body.campground.location,
+                limit: 1
+            })
+            .send();
+
+        console.log("GEO_DATA: ", geoData.body.features);
         const campground = new Campground(req.body.campground);
+
+        // res.send("OK!!!");
 
         // TODO estudia esta parte
         // No entiendo muy bien que esta pasando aqui
