@@ -34,11 +34,11 @@ module.exports.createNewCampground = catchAsyncErrors(
 
         console.log("GEO_DATA: ", geoData.body.features);
         const campground = new Campground(req.body.campground);
-
-        // res.send("OK!!!");
+        campground.geometry = geoData.body.features[0].geometry;
 
         // TODO estudia esta parte
         // No entiendo muy bien que esta pasando aqui
+        // UPDATE: This is adding the urls from cloudinary and storing them.
         campground.images = req.files.map((file) => ({
             url: file.path,
             filename: file.filename
