@@ -6,7 +6,11 @@
 <div class="card mb-3">
     <div class="row">
         <div class="col-md-4">
+            <% if (campgrounds[i].images.length) { %>
             <img class="img-fluid" alt="" src="<%= campgrounds[i].images[0].url %>">
+            <% } else { %>
+            <img class="img-fluid" alt="" src="https://blog.nscsports.org/wp-content/uploads/2014/10/default-img.gif">
+            <% } %>
         </div>
         <div class="col-md-8">
             <div class="card-body">
