@@ -25,6 +25,9 @@ const User = require("./models/user");
 const reviewRoutes = require("./routes/reviews");
 const campgroundRoutes = require("./routes/campgrounds");
 const userRoutes = require("./routes/users");
+const {
+    contentSecurityPolicy
+} = require("./controllers/contentSecurityPolicy");
 
 ///////////////// DATABASE CONNECTION //////////////////////
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
@@ -56,7 +59,10 @@ app.use(
         replaceWith: "_"
     })
 );
-app.use(helmet({ contentSecurityPolicy: false }));
+
+// Helmet //
+app.use(helmet());
+app.use(contentSecurityPolicy);
 
 // Flash //
 app.use(flash());
@@ -88,7 +94,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// locals
+// locals //
 app.use((req, res, next) => {
     // req.user comes from passport, therefore the passport middleware should be above this.
     // req.user is going to be automatically filled in with the deserialized info from the session.
