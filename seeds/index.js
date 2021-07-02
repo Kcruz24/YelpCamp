@@ -21,7 +21,7 @@ const sample = (array) => array[Math.floor(Math.random() * array.length)];
 const seedDB = async () => {
     await Campground.deleteMany({});
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
         const random1000 = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 20) + 10;
 
@@ -35,20 +35,19 @@ const seedDB = async () => {
             price,
             geometry: {
                 type: "Point",
-                coordinates: [-66.4623392630918, 18.2213294459009]
+                coordinates: [
+                    cities[random1000].longitude,
+                    cities[random1000].latitude
+                ]
             },
             images: [
                 {
-                    url: "https://res.cloudinary.com/kcruzcloud/image/upload/v1625046291/YelpCamp/hvp9wabo5ffhv8m0hneg.jpg",
-                    filename: "YelpCamp/hvp9wabo5ffhv8m0hneg"
+                    url: "https://res.cloudinary.com/kcruzcloud/image/upload/v1625207955/YelpCamp/sfbfdxsu56fwfs9pi7g0.jpg",
+                    filename: "YelpCamp/sfbfdxsu56fwfs9pi7g0"
                 },
                 {
-                    url: "https://res.cloudinary.com/kcruzcloud/image/upload/v1625046290/YelpCamp/k2e72dmqmlfraovxtpwa.jpg",
-                    filename: "YelpCamp/k2e72dmqmlfraovxtpwa"
-                },
-                {
-                    url: "https://res.cloudinary.com/kcruzcloud/image/upload/v1625046290/YelpCamp/cng63ftajrqusjeupq6t.jpg",
-                    filename: "YelpCamp/cng63ftajrqusjeupq6t"
+                    url: "https://res.cloudinary.com/kcruzcloud/image/upload/v1625207957/YelpCamp/cbycx0qvphh3v9hqcq9n.jpg",
+                    filename: "YelpCamp/cbycx0qvphh3v9hqcq9n"
                 }
             ]
         });
