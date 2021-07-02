@@ -1,5 +1,6 @@
 // While in development mode require dotenv
-if (process.env.NODE_ENV !== "production") {
+const onDevelopment = process.env.NODE_ENV !== "production";
+if (onDevelopment) {
     require("dotenv").config();
 }
 
@@ -15,6 +16,8 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
 
 const ExpressError = require("./utils/ExpressError");
 const User = require("./models/user");
@@ -22,6 +25,9 @@ const User = require("./models/user");
 const reviewRoutes = require("./routes/reviews");
 const campgroundRoutes = require("./routes/campgrounds");
 const userRoutes = require("./routes/users");
+const {
+    contentSecurityPolicy
+} = require("./controllers/contentSecurityPolicy");
 
 ///////////////// DATABASE CONNECTION //////////////////////
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
@@ -30,7 +36,7 @@ mongoose.connect("mongodb://localhost:27017/yelp-camp", {
     useUnifiedTopology: true,
     useFindAndModify: false
 });
-
+// {"$gt": ""}
 const db = mongoose.connection;
 db.on("error", console.error.bind(console.error, "connection error"));
 db.once("open", () => {
@@ -48,12 +54,22 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(
+    mongoSanitize({
+        replaceWith: "_"
+    })
+);
+
+// Helmet //
+app.use(helmet());
+app.use(contentSecurityPolicy);
 
 // Flash //
 app.use(flash());
 
 // Session //
 const sessionConfig = {
+    name: "session",
     secret: "thisshouldbeabettersecret",
     resave: false,
     saveUninitialized: true,
@@ -61,6 +77,7 @@ const sessionConfig = {
         //                    ms     s    m    h   d
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7,
+        // secure: true,
         httpOnly: true
     }
 };
@@ -77,11 +94,12 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// locals
+// locals //
 app.use((req, res, next) => {
     // req.user comes from passport, therefore the passport middleware should be above this.
     // req.user is going to be automatically filled in with the deserialized info from the session.
     console.log(req.session);
+    console.log("REQ BODY: ", req.body);
     res.locals.currentUser = req.user;
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
