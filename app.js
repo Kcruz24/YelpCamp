@@ -1,5 +1,6 @@
 // While in development mode require dotenv
-if (process.env.NODE_ENV !== "production") {
+const onDevelopment = process.env.NODE_ENV !== "production";
+if (onDevelopment) {
     require("dotenv").config();
 }
 
