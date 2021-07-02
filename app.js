@@ -95,7 +95,7 @@ app.use("/", userRoutes);
 
 ///////////////////// HOME /////////////////////////
 app.get("/", (req, res) => {
-    res.render("campgrounds/home");
+    res.render("home");
 });
 
 ////////////////// ERROR HANDLING ////////////////////
