@@ -61,8 +61,8 @@ app.use(
 );
 
 // Helmet //
-app.use(helmet());
-app.use(contentSecurityPolicy);
+app.use(helmet({ contentSecurityPolicy: false }));
+// app.use(contentSecurityPolicy);
 
 // Flash //
 app.use(flash());
