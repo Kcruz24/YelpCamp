@@ -15,6 +15,7 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+const mongoSanitize = require("express-mongo-sanitize");
 
 const ExpressError = require("./utils/ExpressError");
 const User = require("./models/user");
@@ -30,7 +31,7 @@ mongoose.connect("mongodb://localhost:27017/yelp-camp", {
     useUnifiedTopology: true,
     useFindAndModify: false
 });
-
+// {"$gt": ""}
 const db = mongoose.connection;
 db.on("error", console.error.bind(console.error, "connection error"));
 db.once("open", () => {
@@ -48,6 +49,11 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(
+    mongoSanitize({
+        replaceWith: "_"
+    })
+);
 
 // Flash //
 app.use(flash());
@@ -82,6 +88,7 @@ app.use((req, res, next) => {
     // req.user comes from passport, therefore the passport middleware should be above this.
     // req.user is going to be automatically filled in with the deserialized info from the session.
     console.log(req.session);
+    console.log("REQ BODY: ", req.body);
     res.locals.currentUser = req.user;
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
