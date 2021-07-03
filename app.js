@@ -4,11 +4,8 @@ if (onDevelopment) {
     require("dotenv").config();
 }
 
-console.log(process.env.secret);
-
 // Node modules //
 const express = require("express");
-const port = 3000;
 const path = require("path");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
@@ -72,9 +69,9 @@ app.use(
     })
 );
 
-// Helmet //{ contentSecurityPolicy: false }
-app.use(helmet());
-app.use(contentSecurityPolicy);
+// Helmet //
+app.use(helmet({ contentSecurityPolicy: false }));
+// app.use(contentSecurityPolicy);
 
 // Flash //
 app.use(flash());
@@ -158,6 +155,7 @@ app.use((err, req, res, next) => {
 });
 
 ///////////////////// SERVER /////////////////////////
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log("Serving on port", port);
 });
