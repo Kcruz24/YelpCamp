@@ -6,6 +6,7 @@ if (onDevelopment) {
 
 console.log(process.env.secret);
 
+// Node modules //
 const express = require("express");
 const port = 3000;
 const path = require("path");
@@ -19,12 +20,18 @@ const LocalStrategy = require("passport-local");
 const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
 
+// Error handlers //
 const ExpressError = require("./utils/ExpressError");
+
+// Models //
 const User = require("./models/user");
 
+// Routes //
 const reviewRoutes = require("./routes/reviews");
 const campgroundRoutes = require("./routes/campgrounds");
 const userRoutes = require("./routes/users");
+
+// Controllers //
 const {
     contentSecurityPolicy
 } = require("./controllers/contentSecurityPolicy");
