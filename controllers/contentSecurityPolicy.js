@@ -26,7 +26,8 @@ const connectSrcUrls = [
     "https://api.mapbox.com/",
     "https://a.tiles.mapbox.com/",
     "https://b.tiles.mapbox.com/",
-    "https://events.mapbox.com/"
+    "https://events.mapbox.com/",
+    "https://7972edea2553.ngrok.io"
 ];
 
 const fontSrcUrls = [];

@@ -18,6 +18,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
+const dbUrl = process.env.DB_URL;
 
 const ExpressError = require("./utils/ExpressError");
 const User = require("./models/user");
@@ -30,13 +31,14 @@ const {
 } = require("./controllers/contentSecurityPolicy");
 
 ///////////////// DATABASE CONNECTION //////////////////////
+//"mongodb://localhost:27017/yelp-camp"
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
     useFindAndModify: false
 });
-// {"$gt": ""}
+
 const db = mongoose.connection;
 db.on("error", console.error.bind(console.error, "connection error"));
 db.once("open", () => {
@@ -60,9 +62,9 @@ app.use(
     })
 );
 
-// Helmet //
-app.use(helmet({ contentSecurityPolicy: false }));
-// app.use(contentSecurityPolicy);
+// Helmet //{ contentSecurityPolicy: false }
+app.use(helmet());
+app.use(contentSecurityPolicy);
 
 // Flash //
 app.use(flash());
